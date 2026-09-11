@@ -41,12 +41,17 @@ mongoose
     .connect(MONGO_URL)
     .then(() => {
         console.log("connected to mongoDB");
-
-        //run page on localhost 3000
-        app.listen(PORT, () => {
-            console.log(`node api app is running on port ${PORT}`);
-        });
     })
     .catch(() => {
         console.log(console.error());
     });
+
+//only listen on a port when run directly (local dev, Render, etc.) -
+//Vercel imports the exported app and invokes it per-request instead
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`node api app is running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
