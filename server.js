@@ -13,20 +13,24 @@ const FRONTEND = process.env.FRONTEND;
 
 // Support both dev and production URLs
 const allowedOrigins = [
-    process.env.FRONTEND,                    // http://localhost:5173 (dev)
-    process.env.VERCEL_FRONTEND_URL,        // Vercel production frontend
-    "http://localhost:3000",                 // fallback
+    process.env.FRONTEND,                              // http://localhost:5173 (dev)
+    process.env.VERCEL_FRONTEND_URL,                  // Vercel production frontend (env var)
+    "https://crud-marketplace-front.vercel.app",      // Hardcoded production frontend
+    "http://localhost:3000",                           // Local backend
 ];
 
 var corsOptions = {
     origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or Curl requests)
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
+            console.log(`CORS blocked origin: ${origin}`);
             callback(new Error("Not allowed by CORS"));
         }
     },
     optionsSuccessStatus: 200,
+    credentials: true,
 };
 
 app.use(cors(corsOptions)); //allows anyone to access by default, use config as parameter
