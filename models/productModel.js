@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const { timeStamp } = require("node:console");
 
 //creating schema (object) for database
+//products have implicit id associated with them
 const productSchema = mongoose.Schema(
     {
         name: {

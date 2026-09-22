@@ -11,8 +11,21 @@ const PORT = process.env.PORT || 3000;
 const MONGO_URL = process.env.MONGO_URL;
 const FRONTEND = process.env.FRONTEND;
 
+// Support both dev and production URLs
+const allowedOrigins = [
+    process.env.FRONTEND,                    // http://localhost:5173 (dev)
+    process.env.VERCEL_FRONTEND_URL,        // Vercel production frontend
+    "http://localhost:3000",                 // fallback
+];
+
 var corsOptions = {
-    origin: FRONTEND,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     optionsSuccessStatus: 200,
 };
 
@@ -42,8 +55,8 @@ mongoose
     .then(() => {
         console.log("connected to mongoDB");
     })
-    .catch(() => {
-        console.log(console.error());
+    .catch((err) => {
+        console.error("mongoDB connection error:", err);
     });
 
 //only listen on a port when run directly (local dev, Render, etc.) -
